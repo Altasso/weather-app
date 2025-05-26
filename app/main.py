@@ -6,11 +6,13 @@ from fastapi.templating import Jinja2Templates
 
 from app.crud import save_search, get_stats
 from app.database import create_tables
+from app.routers import weather
+from urllib.parse import quote, unquote
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 templates = Jinja2Templates(directory="app/templates")
-
+app.include_router(weather.router)
 
 @app.on_event("startup")
 async def on_startup():
@@ -19,7 +21,7 @@ async def on_startup():
 
 @app.get("/", response_class=HTMLResponse)
 async def form_page(request: Request):
-    last_city = request.cookies.get("last_city", "")
+    last_city = unquote(request.cookies.get("last_city", ""))
 
     return templates.TemplateResponse("form.html",
                                       {"request": request, "last_city": last_city})
@@ -35,7 +37,7 @@ async def show_weather(request: Request, city: str = Form(...)):
         "forecast": forecast
     })
 
-    response.set_cookie("last_city", city)
+    response.set_cookie("last_city", quote(city))
     await save_search(city)
 
     return response
@@ -53,7 +55,7 @@ async def get_weather(city: str):
 
         location = geo_data["results"][0]
         lat = location["latitude"]
-        lon = location["longtitude"]
+        lon = location["longitude"]
 
         weather_url = (
             f"https://api.open-meteo.com/v1/forecast"
