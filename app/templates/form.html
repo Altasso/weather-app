@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Прогноз погоды</title>
+    <script src="/static/js/autocomplete.js" defer></script>
 </head>
 <body>
-
+    <h1>Узнай погоду в городе</h1>
+    <form action="/weather" method="post">
+        <input type="text" name="city" id="city-input" placeholder="Введите город" value="{{ last_city }}">
+        <button type="submit">Показать</button>
+    </form>
+    <ul id="suggestions"></ul>
 </body>
 </html>
