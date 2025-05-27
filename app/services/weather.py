@@ -3,6 +3,7 @@ import httpx
 GEOCODING_API = "https://geocoding-api.open-meteo.com/v1/search"
 WEATHER_API = "https://api.open-meteo.com/v1/forecast"
 
+
 async def get_coordinates_by_city(city: str):
     async with httpx.AsyncClient() as client:
         response = await client.get(GEOCODING_API, params={"name": city, "count": 1})
@@ -15,6 +16,7 @@ async def get_coordinates_by_city(city: str):
 
         result = data["results"][0]
         return result["latitude"], result["longitude"]
+
 
 async def get_weather(latitude: float, longitude: float):
     async with httpx.AsyncClient as client:

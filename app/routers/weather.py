@@ -3,6 +3,7 @@ from app.services.weather import get_coordinates_by_city, get_weather
 
 router = APIRouter()
 
+
 @router.get("/weather")
 async def get_weather_by_city(city: str):
     coords = await get_coordinates_by_city(city)
